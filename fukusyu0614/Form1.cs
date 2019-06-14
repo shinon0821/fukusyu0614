@@ -67,24 +67,7 @@ namespace fukusyu0614
             {
                 vely[2] = -Math.Abs(-vely[2]);
             }
-            label1.Left += velx[2];
-            label1.Top += vely[2];
-
-            if (label1.Left <= 0)
-            {
-                velx[2] = -velx[2];
-            }
-            if (label1.Top <= 0)
-            {
-                vely[2] = -vely[2];
-            }
-            if (label1.Left >= ClientSize.Width - label1.Width)
-            {
-                velx[2] = -Math.Abs(-velx[2]);
-            }
-            if (label1.Top >= ClientSize.Height - label1.Height)
-            {
-                vely[2] = -Math.Abs(-vely[2]);
+          
             }
         }
     }
