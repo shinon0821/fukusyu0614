@@ -12,27 +12,66 @@ namespace fukusyu0614
 {
     public partial class Form1 : Form
     {
+        int getCount;
+         
         int time = 100 * 5;
-        int velx[]=new int [3];
-        int vely[]=new int [3];
+
+        int[] velx=new int [3];
+        int[] vely=new int [3];
+
+        // const = 定数
+        const int itemCount = 3;
+
+        enum SCENE
+        {
+            TITLE,
+            GAME,
+            GAMEOVER,
+            CLEAR,
+            NONE
+        }
+        /// <summary>
+        /// 現在のシーン
+        /// </summary>
+        SCENE nowScene;
+
+        /// <summary>
+        /// 　切り替えたいシーン
+        /// </summary>
+        SCENE nextScene;
+
+        int[] vx = new int[itemCount];
+        int[] vy = new int[itemCount];
+        Label[] labels = new Label[itemCount];
+
+        private static Random rand = new Random();
+
         public Form1()
         {
             InitializeComponent();
-            for(int i=0;i<3;i;;)
+
+            nextScene = SCENE.TITLE;
+            nowScene = SCENE.NONE;
+
+            for (int i = 0; i < itemCount; i++)
             {
-                velx[i]=Random.Next(-10,11);
-                vely[i]=Random.next(-10,11);
+                labels[i] = new Label();
+                labels[i].AutoSize = true;
+                labels[i].Text = "(・ワ ・ 🌻)";
+                Controls.Add(labels[i]);
+                labels[i].Font = label1.Font;
+                labels[i].ForeColor = label1.ForeColor;
+                labels[i].Left = rand.Next(ClientSize.Width - label1.Width);
+                labels[i].Top = rand.Next(ClientSize.Height - label1.Height);
+                vx[i] = rand.Next(-5,6);
+                vy[i] = rand.Next(-5,6);
             }
 
-            velx[0]=rand.next(-10,,11);
-        velx[1]=rand.Next(-10,11);
-        velx[2]=rand.Next(-10,11);
-        vely[0]=rand.Next(-10,11);
-        vely[1]=rand.Next(-10,11);
-        vely[2]=rand.Next(-10,11);
+            label1.Left = rand.Next(ClientSize.Width - label1.Width);
+            label1.Top = rand.Next(ClientSize.Height - label1.Height);
 
-        label1.Left=rand.Next(ClientSize.Width-label1.Width);
-        label1.Top=rand.Next(ClientSize.Height=label1.Height);
+           
+            
         
         }
 
@@ -46,29 +85,145 @@ namespace fukusyu0614
 
         }
 
-        private void timer1_Tick(object sender, EventArgs e)
+        void initProc()
         {
-            label1.Left+=velx[2];
-            label1.Top+=vely[2];
+            //nextSceneがNONEだったら、何もしない
+            if (nextScene == SCENE.NONE) return;
 
-            if (label1.Left <= 0)
+            nowScene = nextScene;
+            nextScene = SCENE.NONE;
+
+            switch(nowScene)
             {
-                velx[2] = -velx[2];
-            }
-            if (label1.Top <= 0)
-            {
-                vely[2] = -vely[2];
-            }
-            if (label1.Left >= ClientSize.Width - label1.Width)
-            {
-                velx[2] = -Math.Abs(-velx[2]);
-            }
-            if (label1.Top >= ClientSize.Height - label1.Height)
-            {
-                vely[2] = -Math.Abs(-vely[2]);
-            }
-          
+                case SCENE.TITLE:
+                    label2.Visible=true;
+                    button1.Visible=true;
+                    break;
+
+                case SCENE.GAME:
+                    label2.Visible=false;
+                    button1.Visible=false;
+                    getCount = itemCount;
+                    break;
             }
         }
+
+        void updateProc()
+        {
+            if(nowScene==SCENE.GAME)
+            {
+                updateGame();
+            }
+        }
+
+        void updateGame()
+        {
+            for (int i = 0; i < itemCount; i++)
+            {
+                labels[i].Left += vx[i];
+                labels[i].Top += vy[i];
+
+                labels[i].Left += velx[2];
+                labels[i].Top += vely[2];
+
+                if (labels[i].Left <= 0)
+                {
+                    vx[2] = -vx[2];
+                }
+                if (labels[i].Top <= 0)
+                {
+                    vy[2] = -vy[2];
+                }
+                if (labels[i].Left >= ClientSize.Width - labels[i].Width)
+                {
+                    vx[2] = -Math.Abs(-vx[2]);
+                }
+                if (labels[i].Bottom >= ClientSize.Height - labels[i].Height)
+                {
+                    vy[2] = -Math.Abs(-vy[2]);
+                }
+                
+
+                label2.Left += vx[1];
+                label2.Top += vy[1];
+
+                if (label2.Left <= 0)
+                {
+                    vx[1] = -vx[1];
+                }
+                if (label2.Top <= 0)
+                {
+                    vy[1] = -vy[1];
+                }
+                if (label2.Left >= ClientSize.Width - label2.Width)
+                {
+                    vx[1] = -Math.Abs(-vx[1]);
+                }
+                if (label2.Top >= ClientSize.Height - label2.Height)
+                {
+                    vy[1] = -Math.Abs(-vy[1]);
+                }
+                label2.Left += vx[1];
+                label2.Top += vy[1];
+
+                if (label2.Left <= 0)
+                {
+                    vx[1] = -vx[1];
+                }
+                if (label2.Top <= 0)
+                {
+                    vy[1] = -vy[1];
+                }
+                if (label2.Left >= ClientSize.Width - label2.Width)
+                {
+                    vx[1] = -Math.Abs(-vx[1]);
+                }
+                if (label2.Top >= ClientSize.Height - label2.Height)
+                {
+                    vy[1] = -Math.Abs(-vy[1]);
+                }
+
+                Point p = PointToClient(MousePosition);
+
+                if ((p.X >= labels[i].Left)
+                  && (p.X <= labels[i].Right)
+                  && (p.Y >= labels[i].Top)
+                  && (p.Y <= labels[i].Bottom)
+                  )
+                {
+                    //timer1.Enabled = false;
+                    labels[i].Visible = false;
+                    getCount--;
+                    if (getCount<=0)
+                    {
+                        nextScene = SCENE.CLEAR;
+                    }
+                }
+
+               
+            }
+        }
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            initProc();
+            updateProc();
+            
+        }
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            nextScene = SCENE.GAME;
+
+        }
     }
+    
 }
